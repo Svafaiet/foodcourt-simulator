@@ -3,6 +3,13 @@ import numpy as np
 
 class Customer:
     tiredness_rate = 1.0
+    star_probability = {
+        0: 0.5,
+        1: 0.2,
+        2: 0.15,
+        3: 0.1,
+        4: 0.05,
+    }
 
     @staticmethod
     def get_tiredness_time():
