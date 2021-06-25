@@ -14,8 +14,9 @@ class Acceptor:
             return time
         service_time = self._generate_service_time()
         self.service_times.append(service_time)
+        customer.start_paziresh_time = time
         customer.paziresh_time = time + service_time
-        self.operators[customer.service_type].add_customer(customer)
+        self.operators[customer.service_type].add_customer(customer, time + service_time)
         return service_time + time
 
     def _generate_service_time(self):
@@ -24,24 +25,24 @@ class Acceptor:
 
 class Operator:
 
-    def __init__(self, workers):
-        self.queue = Queue()
+    def __init__(self, operator_name, workers):
+        self.queue = Queue(operator_name)
         self.workers = workers
 
-    def add_customer(self, customer):
-        self.queue.insert(customer)
+    def add_customer(self, customer, time):
+        self.queue.insert(customer, time)
 
     def process_queue(self):
         time = 0
         while self.queue.has_next(time):
-            customer = self.queue.next(time)
+            customer = self.queue.pop(time)
             worker = self.find_free_worker()
             time = max(worker.end_of_last_work, customer.paziresh_time)
             if customer.is_tired(time):
                 customer.tired = True
                 continue
             end_time = worker.work(customer, time)
-            self.queue.remove(end_time) # TODO: use proper name
+            self.queue.log_pop(end_time, customer)
 
     def find_free_worker(self):
         min_free_workers = []
