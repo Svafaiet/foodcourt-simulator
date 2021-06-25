@@ -8,6 +8,11 @@ class Acceptor:
         self.mean_service_time = mean_service_time
         self.operators = operators
         self.service_times = []
+        self.queue = Queue("Acc")
+
+    def make_queue(self, customer_iterator):
+        for customer in customer_iterator:
+            self.queue.insert(customer, customer.start_time)
 
     def assign(self, customer, time):
         if customer.is_tired(time):

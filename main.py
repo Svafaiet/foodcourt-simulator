@@ -1,4 +1,24 @@
 import pandas as pd
+import os
+from simulater import Simulator
+
+
+def read_inputs():
+    first_line = input()
+
+    if os.path.exists(first_line):
+        with open(first_line, 'r') as f:
+            main_args = f.readline()
+            other_args = list(f.readlines())
+
+    else:
+        main_args = first_line
+        other_args = list(input() for _ in range(int(first_line.split()[0])))
+
+    arrival_rate, operator_service_rate, tiredness_rate = tuple(map(float, main_args[1]))
+    averages = list(map(lambda operator_arg: list(map(float, operator_arg)), other_args))
+
+    return arrival_rate, operator_service_rate, tiredness_rate, averages
 
 
 def print_customer_reports(customers):
@@ -28,3 +48,8 @@ def print_customer_reports(customers):
     print("Wait times for processed users:")
     print(pd.DataFrame(data=wait_times, index=index).groupby("type").mean())
     print("Number of tired users:", tired_counts)
+
+
+def main():
+    arrival_rate, operator_service_rate, tiredness_rate, averages = read_inputs()
+    simulator = Simulator(arrival_rate, operator_service_rate, tiredness_rate, averages)

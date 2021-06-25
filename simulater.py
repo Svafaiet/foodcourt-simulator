@@ -27,12 +27,17 @@ class CustomerGenerator:
 class Simulator:
     def __init__(self, arrival_rate, operator_service_rate, tiredness_rate, averages):
         self.operators = []
-        for operator_averages in averages:
+        for index, operator_averages in enumerate(averages):
             workers = list(map(lambda avg: Worker(avg), operator_averages))
-            self.operators.append(Operator(workers))
+            self.operators.append(Operator(f"Op{index}", workers))
         self.acceptor = Acceptor(operator_service_rate, self.operators)
         self.customer_generator = CustomerGenerator(
             arrival_rate=arrival_rate,
             tiredness_rate=tiredness_rate,
             service_count=len(self.operators)
         )
+
+    def simulate(self, customer_count=10_000_000):
+        customers = self.customer_generator.generate_n(customer_count, start_time=0)
+        self.acceptor.make_queue(customers)
+        #TODO acceptor while loop in a function to proccess all customers
