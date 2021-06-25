@@ -23,6 +23,8 @@ class Customer:
         self.paziresh_time = None
         self.service_time = None
         self.abandon_time = None
+        self.queue_arrival_time = dict()
+        self.queue_departure_time = dict()
 
     def is_tired(self, time):
         return time > self.tired_time
