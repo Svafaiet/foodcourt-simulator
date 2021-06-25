@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 
 
@@ -15,8 +17,8 @@ class Customer:
     def get_tiredness_time():
         return np.random.exponential(scale=1/Customer.tiredness_rate)
 
-    def __init__(self, star, service_type, start_time):
-        self.star = star
+    def __init__(self, service_type, start_time):
+        self.star = Customer.star_probability[random.randint(0, len(Customer.star_probability) - 1)]
         self.service_type = service_type
         self.start_time = start_time
         self.tired_time = start_time + Customer.get_tiredness_time()
