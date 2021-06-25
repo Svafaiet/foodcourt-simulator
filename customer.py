@@ -20,6 +20,7 @@ class Customer:
         self.service_type = service_type
         self.start_time = start_time
         self.tired_time = start_time + Customer.get_tiredness_time()
+        self.tired = False
         self.paziresh_time = None
         self.service_time = None
         self.abandon_time = None

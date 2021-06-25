@@ -1,6 +1,6 @@
 from typing import List
-
 import numpy as np
+from queue import Queue
 
 
 class Acceptor:
@@ -25,23 +25,38 @@ class Acceptor:
 class Operator:
 
     def __init__(self, workers):
-        self.queue = [] # TODO: use heap
+        self.queue = Queue()
         self.workers = workers
 
     def add_customer(self, customer):
-        self.queue.append(customer)
+        self.queue.insert(customer)
 
     def process_queue(self):
-        # TODO: process queue and remove tired customers
-        pass
+        time = 0
+        while self.queue.has_next(time):
+            customer = self.queue.next(time)
+            worker = self.find_free_worker()
+            time = max(worker.end_of_last_work, customer.paziresh_time)
+            if customer.is_tired(time):
+                customer.tired = True
+                continue
+            end_time = worker.work(customer, time)
+            self.queue.remove(end_time) # TODO: use proper name
+
+    def find_free_worker(self):
+        min_free_workers = []
+        min_free_time = min(self.workers, key=lambda w: w.end_of_last_work).end_of_last_work
+        for worker in self.workers:
+            if worker.end_of_last_work == min_free_time:
+                min_free_workers.append(worker)
+        return min_free_workers[np.floor(np.random.uniform(low=0, high=len(min_free_workers)))]
 
 
 class Worker:
 
     def __init__(self, mean_service_time):
         self.mean_service_time = mean_service_time
-        self.is_working = False
-        self.end_of_last_work = -1
+        self.end_of_last_work = 0
         self.done_works = []
 
     def _generate_service_time(self):
@@ -51,6 +66,7 @@ class Worker:
         return self.end_of_last_work <= time
 
     def work(self, customer, time):
-        service_time = self._generate_service_time()
-        self.end_of_last_work = service_time + time
-        customer.service_time = service_time + time
+        end_time = self._generate_service_time() + time
+        self.end_of_last_work = end_time
+        customer.service_time = end_time
+        return end_time
