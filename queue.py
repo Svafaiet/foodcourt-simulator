@@ -16,7 +16,7 @@ class Queue:
                 return queue.pop()
 
     def __iter__(self):
-        for queue in self.queues:
+        for queue in self.queues[::-1]:
             for item in queue:
                 yield item
 
