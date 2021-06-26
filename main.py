@@ -12,10 +12,10 @@ def read_inputs():
             other_args = list(f.readlines())
 
     else:
-        main_args = first_line
-        other_args = list(input() for _ in range(int(first_line.split()[0])))
+        main_args = first_line.split(" ")
+        other_args = list(input().split(" ") for _ in range(int(first_line.split(" ")[0])))
 
-    arrival_rate, operator_service_rate, tiredness_rate = tuple(map(float, main_args[1]))
+    arrival_rate, operator_service_rate, tiredness_rate = tuple(map(float, main_args[1:]))
     averages = list(map(lambda operator_arg: list(map(float, operator_arg)), other_args))
 
     return arrival_rate, operator_service_rate, tiredness_rate, averages
@@ -53,3 +53,7 @@ def print_customer_reports(customers):
 def main():
     arrival_rate, operator_service_rate, tiredness_rate, averages = read_inputs()
     simulator = Simulator(arrival_rate, operator_service_rate, tiredness_rate, averages)
+    simulator.simulate()
+
+if __name__ == '__main__':
+    main()
