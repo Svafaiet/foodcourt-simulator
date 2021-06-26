@@ -14,8 +14,16 @@ class Acceptor:
         for customer in customer_iterator:
             self.queue.insert(customer, customer.start_time)
 
+    def process_queue(self):
+        time = 0
+        while self.queue.has_next():
+            customer = self.queue.pop(time)
+            time = max(time, customer.queue_arrival_time)
+            time = self.assign(customer, time)
+
     def assign(self, customer, time):
         if customer.is_tired(time):
+            customer.tired = True
             return time
         service_time = self._generate_service_time()
         self.service_times.append(service_time)
@@ -39,7 +47,7 @@ class Operator:
 
     def process_queue(self):
         time = 0
-        while self.queue.has_next(time):
+        while self.queue.has_next():
             customer = self.queue.pop(time)
             worker = self.find_free_worker()
             time = max(worker.end_of_last_work, customer.paziresh_time)

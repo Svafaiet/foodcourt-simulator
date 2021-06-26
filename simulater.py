@@ -40,4 +40,7 @@ class Simulator:
     def simulate(self, customer_count=10_000_000):
         customers = self.customer_generator.generate_n(customer_count, start_time=0)
         self.acceptor.make_queue(customers)
-        #TODO acceptor while loop in a function to proccess all customers
+        self.acceptor.process_queue()
+        for op in self.operators:
+            op.process_queue()
+        print("Simulation finished.")
