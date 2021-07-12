@@ -25,7 +25,7 @@ class CustomerGenerator:
             yield customer
 
 
-class Simulator:
+class SharifPlus:
     def __init__(self, arrival_rate, operator_service_rate, tiredness_rate, averages):
         self.operators = []
         for index, operator_averages in enumerate(averages):
@@ -45,3 +45,4 @@ class Simulator:
         for op in self.operators:
             op.process_queue()
         print("Simulation finished.")
+        return customers

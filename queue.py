@@ -3,17 +3,6 @@ from collections import deque
 from customer import Customer
 
 
-def log_pop(pop_function):
-    def pop_with_log(self, time):
-        customer = pop_function(self, time)
-        departure_time = max(time, customer.queue_arrival_time[self.name])
-        customer.queue_departure_time[self.name] = departure_time
-        self.departure_times.append(departure_time)
-        return customer
-
-    return pop_with_log
-
-
 class Queue:
     def __init__(self, name):
         self.name = name
@@ -26,8 +15,7 @@ class Queue:
         self.queues[customer.star].appendleft(customer)
         self.insert_times.append(time)
 
-    @log_pop
-    def pop(self, time):
+    def _pop(self, time):
         for queue in self.queues[::-1]:
             if queue and queue[0].queue_arrival_time[self.name] <= time:
                 return queue.pop()
@@ -38,5 +26,19 @@ class Queue:
                 customers.append(queue)
         return min(customers, key=lambda q: q[0].queue_arrival_time[self.name]).pop()
 
-    def has_next(self):
+    def _has_next(self):
         return any(map(lambda queue: queue and len(queue) > 0, self.queues))
+
+    def pop(self, time):
+        while self._has_next():
+            customer = self._pop(time)
+            departure_time = max(time, customer.queue_arrival_time[self.name])
+            if customer.is_tired(departure_time):
+                customer.tired = True
+                customer.queue_departure_time[self.name] = customer.tired_time
+                self.departure_times.append(customer.tired_time)
+                continue
+            customer.queue_departure_time[self.name] = departure_time
+            self.departure_times.append(departure_time)
+            return customer
+        return None

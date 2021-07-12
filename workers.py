@@ -16,21 +16,26 @@ class Acceptor:
 
     def process_queue(self):
         time = 0
-        while self.queue.has_next():
+        while True:
             customer = self.queue.pop(time)
+            if not customer:
+                break
             time = max(time, customer.queue_arrival_time[self.queue.name])
             time = self.assign(customer, time)
 
     def assign(self, customer, time):
-        if customer.is_tired(time):
-            customer.tired = True
-            return time
         service_time = self._generate_service_time()
         self.service_times.append(service_time)
         customer.start_paziresh_time = time
-        customer.paziresh_time = time + service_time
-        self.operators[customer.service_type].add_customer(customer, time + service_time)
-        return service_time + time
+        end_of_paziresh = time + service_time
+        if customer.is_tired(end_of_paziresh):
+            customer.tired = True
+            end_of_paziresh = customer.tired_time
+            customer.paziresh_time = end_of_paziresh
+        else:
+            customer.paziresh_time = end_of_paziresh
+        self.operators[customer.service_type].add_customer(customer, end_of_paziresh)
+        return end_of_paziresh
 
     def _generate_service_time(self):
         return int(np.random.exponential(scale=self.mean_service_time))  # TODO: check this distribution
@@ -47,13 +52,12 @@ class Operator:
 
     def process_queue(self):
         time = 0
-        while self.queue.has_next():
+        while True:
             customer = self.queue.pop(time)
+            if not customer:
+                break
             worker = self.find_free_worker()
             time = max(worker.end_of_last_work, customer.paziresh_time)
-            if customer.is_tired(time):
-                customer.tired = True
-                continue
             worker.work(customer, time)
 
     def find_free_worker(self):

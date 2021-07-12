@@ -1,6 +1,8 @@
 import pandas as pd
 import os
-from simulater import Simulator
+
+from plotter import SharifPlusAnalysor
+from simulater import SharifPlus
 
 
 def read_inputs():
@@ -52,11 +54,14 @@ def print_customer_reports(customers):
 
 def main():
     arrival_rate, operator_service_rate, tiredness_rate, averages = read_inputs()
-    simulator = Simulator(arrival_rate, operator_service_rate, tiredness_rate, averages)
+    sharifplus = SharifPlus(arrival_rate, operator_service_rate, tiredness_rate, averages)
     import time
     t0 = time.time()
-    simulator.simulate(customer_count=1000)
+    customers = sharifplus.simulate(customer_count=1000)
     print(time.time() - t0)
+    plotter = SharifPlusAnalysor(sharifplus, customers)
+    plotter.plot_time_related()
+
 
 if __name__ == '__main__':
     main()
