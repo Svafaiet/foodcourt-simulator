@@ -5,7 +5,7 @@ from queue import Queue
 
 class Acceptor:
     def __init__(self, mean_service_time: float, operators: List):
-        self.mean_service_time = mean_service_time
+        self.service_time_rate = mean_service_time
         self.operators = operators
         self.service_times = []
         self.queue = Queue("Acc")
@@ -38,7 +38,7 @@ class Acceptor:
         return end_of_paziresh
 
     def _generate_service_time(self):
-        return int(np.random.exponential(scale=self.mean_service_time))  # TODO: check this distribution
+        return int(np.random.exponential(scale=1/self.service_time_rate))  # TODO: check this distribution
 
 
 class Operator:

@@ -17,14 +17,15 @@ class Queue:
 
     def _pop(self, time):
         for queue in self.queues[::-1]:
-            if queue and queue[0].queue_arrival_time[self.name] <= time:
+            if queue and queue[-1].queue_arrival_time[self.name] <= time:
                 return queue.pop()
         # We should find earliest customer because we don't have any customer in given time
         customers = []
         for queue in self.queues[::-1]:
             if queue:
                 customers.append(queue)
-        return min(customers, key=lambda q: q[0].queue_arrival_time[self.name]).pop()
+        # print(list(q[-1] for q in customers))
+        return min(customers, key=lambda q: q[-1].queue_arrival_time[self.name]).pop()
 
     def _has_next(self):
         return any(map(lambda queue: queue and len(queue) > 0, self.queues))

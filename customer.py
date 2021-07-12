@@ -54,3 +54,8 @@ class Customer:
             return self.queue_departure_time[matching[0]]
         return None
 
+    def __str__(self):
+        return str(self.__dict__)
+
+    def __repr__(self):
+        return self.__str__()
