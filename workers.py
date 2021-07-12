@@ -77,7 +77,7 @@ class Worker:
         self.done_works = []
 
     def _generate_service_time(self):
-        return int(np.random.exponential(scale=self.mean_service_time))  # TODO: check this distribution
+        return int(np.random.exponential(scale=1/self.mean_service_time))  # TODO: check this distribution
 
     def is_working(self, time):
         return self.end_of_last_work <= time
