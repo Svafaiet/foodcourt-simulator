@@ -57,7 +57,7 @@ def print_customer_reports(customers):
     print("Number of all users:", len(customers))
 
 
-def main():
+def main(show=False):
     random_seed = 100
     random.seed(random_seed)
     np.random.seed(random_seed)
@@ -65,15 +65,19 @@ def main():
     sharifplus = SharifPlus(arrival_rate, operator_service_rate, tiredness_rate, averages)
     import time
     t0 = time.time()
-    customers = sharifplus.simulate(customer_count=1000000)
+    customers = sharifplus.simulate(customer_count=10_000_000)
     t1 = time.time()
     print("Simulation time", str(t1 - t0))
     print_customer_reports(customers)
+    t2 = time.time()
+    print(t2 - t1)
+    print("Plotting...")
     plotter = SharifPlusAnalysor(sharifplus, customers)
-    plotter.plot_time_related()
-    print("Process time", str(time.time() - t1))
-    plotter.plot()
+    plotter.plot_time_related(show=show)
+    plotter.plot_customer_related(show=show)
+    print("Process time", str(time.time() - t2))
+    plotter.plot(show=show)
 
 
 if __name__ == '__main__':
-    main()
+    main(show=False)

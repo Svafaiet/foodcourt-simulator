@@ -54,6 +54,16 @@ class Customer:
             return self.queue_departure_time[matching[0]]
         return None
 
+    def get_total_service_time(self):
+        system_time = self.get_system_time() - self.start_time
+        return system_time - self.get_total_wait_time()
+
+    def get_total_wait_time(self):
+        wait_time = 0
+        for queue_name in self.queue_arrival_time.keys():
+            wait_time += self.queue_departure_time[queue_name] - self.queue_arrival_time[queue_name]
+        return wait_time
+
     def __str__(self):
         return str(self.__dict__)
 
