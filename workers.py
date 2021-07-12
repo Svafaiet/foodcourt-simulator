@@ -33,7 +33,7 @@ class Acceptor:
         return service_time + time
 
     def _generate_service_time(self):
-        return np.random.exponential(scale=self.mean_service_time) # TODO: check this distribution
+        return int(np.random.exponential(scale=self.mean_service_time))  # TODO: check this distribution
 
 
 class Operator:
@@ -54,8 +54,7 @@ class Operator:
             if customer.is_tired(time):
                 customer.tired = True
                 continue
-            end_time = worker.work(customer, time)
-            self.queue.log_pop(end_time, customer)
+            worker.work(customer, time)
 
     def find_free_worker(self):
         min_free_workers = []
@@ -74,13 +73,17 @@ class Worker:
         self.done_works = []
 
     def _generate_service_time(self):
-        return np.random.exponential(scale=self.mean_service_time)  # TODO: check this distribution
+        return int(np.random.exponential(scale=self.mean_service_time))  # TODO: check this distribution
 
     def is_working(self, time):
         return self.end_of_last_work <= time
 
     def work(self, customer, time):
         end_time = self._generate_service_time() + time
+        if end_time > customer.tired_time:
+            customer.tired = True
+            end_time = customer.tired_time
+        else:
+            customer.service_time = end_time
         self.end_of_last_work = end_time
-        customer.service_time = end_time
         return end_time

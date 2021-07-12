@@ -4,7 +4,6 @@ import numpy as np
 
 
 class Customer:
-    tiredness_rate = 1.0
     star_probability = {
         0: 0.5,
         1: 0.2,
@@ -14,8 +13,8 @@ class Customer:
     }
 
     @staticmethod
-    def get_tiredness_time():
-        return np.random.exponential(scale=1/Customer.tiredness_rate)
+    def get_tiredness_time(tiredness_rate):
+        return int(np.random.exponential(scale=1/tiredness_rate))
 
     @staticmethod
     def _create_star():
@@ -25,16 +24,15 @@ class Customer:
             if p < 0:
                 return key
 
-    def __init__(self, service_type, start_time):
+    def __init__(self, service_type, start_time, tiredness_rate):
         self.star = Customer._create_star()
         self.service_type = service_type
         self.start_time = start_time
-        self.tired_time = start_time + Customer.get_tiredness_time()
+        self.tired_time = start_time + Customer.get_tiredness_time(tiredness_rate)
         self.tired = False
         self.start_paziresh_time = None
         self.paziresh_time = None
         self.service_time = None
-        self.abandon_time = None
         self.queue_arrival_time = dict()
         self.queue_departure_time = dict()
 

@@ -53,7 +53,10 @@ def print_customer_reports(customers):
 def main():
     arrival_rate, operator_service_rate, tiredness_rate, averages = read_inputs()
     simulator = Simulator(arrival_rate, operator_service_rate, tiredness_rate, averages)
-    simulator.simulate()
+    import time
+    t0 = time.time()
+    simulator.simulate(customer_count=1000)
+    print(time.time() - t0)
 
 if __name__ == '__main__':
     main()

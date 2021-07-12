@@ -13,8 +13,9 @@ class CustomerGenerator:
         self.service_count = service_count
 
     def generate(self, time):
-        inter_arrival_time = np.random.exponential(scale=1 / self.arrival_rate)
-        return Customer(service_type=random.randint(0, self.service_count - 1), start_time=time + inter_arrival_time)
+        inter_arrival_time = int(np.random.exponential(scale=1 / self.arrival_rate))
+        return Customer(service_type=random.randint(0, self.service_count - 1), start_time=time + inter_arrival_time,
+                        tiredness_rate=self.tiredness_rate)
 
     def generate_n(self, n, start_time=0):
         time = start_time
@@ -38,7 +39,7 @@ class Simulator:
         )
 
     def simulate(self, customer_count=10_000_000):
-        customers = self.customer_generator.generate_n(customer_count, start_time=0)
+        customers = list(self.customer_generator.generate_n(customer_count, start_time=0))
         self.acceptor.make_queue(customers)
         self.acceptor.process_queue()
         for op in self.operators:
