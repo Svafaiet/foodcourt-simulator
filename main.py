@@ -30,26 +30,28 @@ def print_customer_reports(customers):
     tired_counts = len(list(filter(lambda c: c.tired, customers)))
 
     for customer in filter(lambda c: not c.tired, customers):
-        system_times.append([customer.star, customer.start_time - customer.service_time])
+        system_times.append([customer.star, customer.service_time - customer.start_time])
 
     for customer in filter(lambda c: not c.tired, customers):
-        wait_times.append([customer.star, customer.start_time - customer.start_paziresh_time
-                           + (customer.paziresh_time - customer.service_time)])
+        wait_times.append([customer.star, customer.start_paziresh_time - customer.start_time
+                           + (customer.service_time - customer.paziresh_time)])
 
     for customer in filter(lambda c: not c.tired, customers):
-        system_times.append([customer.star, customer.start_time - customer.service_time])
+        system_times.append([customer.star, customer.service_time - customer.start_time])
 
     for customer in filter(lambda c: c.tired, customers):
-        tired_system_times.append([customer.star, customer.start_time - customer.tired_time])
+        tired_system_times.append([customer.star, customer.tired_time - customer.start_time])
 
     index = ["type", "value"]
     print("System times for processed users:")
-    print(pd.DataFrame(data=system_times, index=index).groupby("type").mean())
+    print(pd.DataFrame(data=system_times, columns=index).groupby("type").mean())
     print("System times for tired users:")
-    print(pd.DataFrame(data=tired_system_times, index=index).groupby("type").mean())
+    print(pd.DataFrame(data=tired_system_times, columns=index).groupby("type").mean())
     print("Wait times for processed users:")
-    print(pd.DataFrame(data=wait_times, index=index).groupby("type").mean())
+    print(pd.DataFrame(data=wait_times, columns=index).groupby("type").mean())
     print("Number of tired users:", tired_counts)
+    print("Number of all users:", len(customers))
+
 
 
 def main():
@@ -59,6 +61,7 @@ def main():
     t0 = time.time()
     customers = sharifplus.simulate(customer_count=1000)
     print(time.time() - t0)
+    print_customer_reports(customers)
     plotter = SharifPlusAnalysor(sharifplus, customers)
     plotter.plot_time_related()
 
