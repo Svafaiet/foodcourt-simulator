@@ -24,10 +24,10 @@ class Queue:
         for queue in self.queues[::-1]:
             if queue:
                 customers.append(queue)
-        return min(customers, key=lambda q: q[0].queue_arrival_time).pop()
+        return min(customers, key=lambda q: q[0].queue_arrival_time[self.name]).pop()
 
     def has_next(self):
-        return any((lambda queue: queue and len(queue) > 0, self.queues))
+        return any(map(lambda queue: queue and len(queue) > 0, self.queues))
 
     def log_pop(self, time, customer):
         customer.queue_arrival_time[self.name] = time

@@ -18,7 +18,7 @@ class Acceptor:
         time = 0
         while self.queue.has_next():
             customer = self.queue.pop(time)
-            time = max(time, customer.queue_arrival_time)
+            time = max(time, customer.queue_arrival_time[self.queue.name])
             time = self.assign(customer, time)
 
     def assign(self, customer, time):
@@ -63,7 +63,7 @@ class Operator:
         for worker in self.workers:
             if worker.end_of_last_work == min_free_time:
                 min_free_workers.append(worker)
-        return min_free_workers[np.floor(np.random.uniform(low=0, high=len(min_free_workers)))]
+        return min_free_workers[int(np.floor(np.random.uniform(low=0, high=len(min_free_workers))))]
 
 
 class Worker:
