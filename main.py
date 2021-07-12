@@ -65,11 +65,14 @@ def main():
     sharifplus = SharifPlus(arrival_rate, operator_service_rate, tiredness_rate, averages)
     import time
     t0 = time.time()
-    customers = sharifplus.simulate(customer_count=100)
-    print(time.time() - t0)
+    customers = sharifplus.simulate(customer_count=1000000)
+    t1 = time.time()
+    print("Simulation time", str(t1 - t0))
     print_customer_reports(customers)
     plotter = SharifPlusAnalysor(sharifplus, customers)
     plotter.plot_time_related()
+    print("Process time", str(time.time() - t1))
+    plotter.plot()
 
 
 if __name__ == '__main__':

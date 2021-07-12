@@ -49,4 +49,6 @@ class SharifPlusAnalysor:
                 self.sharfplus.operators[index].queue.departure_times,
                 title="Operator{} Queue Population".format(index),
             )
+
+    def plot(self):
         plot.show()
