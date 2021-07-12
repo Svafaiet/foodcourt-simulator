@@ -34,7 +34,7 @@ class Acceptor:
             customer.paziresh_time = end_of_paziresh
         else:
             customer.paziresh_time = end_of_paziresh
-        self.operators[customer.service_type].add_customer(customer, end_of_paziresh)
+            self.operators[customer.service_type].add_customer(customer, end_of_paziresh)
         return end_of_paziresh
 
     def _generate_service_time(self):
