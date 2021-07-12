@@ -48,8 +48,9 @@ def print_customer_reports(customers):
     index = ["type", "value"]
     print("System times for processed users:")
     print(pd.DataFrame(data=system_times, columns=index).groupby("type").mean())
-    print("System times for tired users:")
-    print(pd.DataFrame(data=tired_system_times, columns=index).groupby("type").mean())
+    if len(tired_system_times) > 0:
+        print("System times for tired users:")
+        print(pd.DataFrame(data=tired_system_times, columns=index).groupby("type").mean())
     print("Wait times for processed users:")
     print(pd.DataFrame(data=wait_times, columns=index).groupby("type").mean())
     print("Number of tired users:", tired_counts)
