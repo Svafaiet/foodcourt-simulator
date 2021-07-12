@@ -9,7 +9,7 @@ class SharifPlusAnalysor:
         self.customers = customers
         self.sharfplus = sharifplus
 
-    def _plot_population(self, ax, arrivals, departures, **kwargs):
+    def _plot_population(self, ax, arrivals, departures, title, **kwargs):
         c = Counter(arrivals)
         c.subtract(Counter(departures))
         x = []
@@ -22,19 +22,31 @@ class SharifPlusAnalysor:
             if diff:
                 x.append(time)
                 y.append(population)
-        print(x, y)
+        ax.set_title(title)
         return ax.plot(x, y, **kwargs)
 
     def plot_time_related(self):
-        fig, (ax1, ax2) = plot.subplots(1, 2)
+        main_fig, (sys_ax, acc_ax) = plot.subplots(2, constrained_layout=True)
         self._plot_population(
-            ax1,
+            sys_ax,
+            list(customer.start_time for customer in self.customers),
+            list(customer.get_system_time() for customer in self.customers),
+            title="System Population",
+        )
+        self._plot_population(
+            acc_ax,
             self.sharfplus.acceptor.queue.insert_times,
             self.sharfplus.acceptor.queue.departure_times,
+            title="Acceptor Queue Population",
         )
-        # self._plot_population(
-        #     ax2,
-        #     self.sharfplus.acceptor.queue.insert_times,
-        #     self.sharfplus.acceptor.queue.departure_times,
-        # )
-        fig.show()
+        operator_queue_fig, axs = plot.subplots(len(self.sharfplus.operators), constrained_layout=True)
+        if len(self.sharfplus.operators) == 1:
+            axs = [axs]
+        for index, ax in enumerate(axs):
+            self._plot_population(
+                ax,
+                self.sharfplus.operators[index].queue.insert_times,
+                self.sharfplus.operators[index].queue.departure_times,
+                title="Operator{} Queue Population".format(index),
+            )
+        plot.show()

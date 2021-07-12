@@ -38,3 +38,19 @@ class Customer:
 
     def is_tired(self, time):
         return time > self.tired_time
+
+    def get_system_time(self):
+        return self.service_time or self.tired_time
+
+    def get_operator_arrival_time(self):
+        matching = [s for s in self.queue_arrival_time.keys() if "Op" in s]
+        if matching:
+            return self.queue_arrival_time[matching[0]]
+        return None
+
+    def get_operator_departure_time(self):
+        matching = [s for s in self.queue_departure_time.keys() if "Op" in s]
+        if matching:
+            return self.queue_departure_time[matching[0]]
+        return None
+

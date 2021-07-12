@@ -1,4 +1,7 @@
+import random
+
 import pandas as pd
+import numpy as np
 import os
 
 from plotter import SharifPlusAnalysor
@@ -53,13 +56,15 @@ def print_customer_reports(customers):
     print("Number of all users:", len(customers))
 
 
-
 def main():
+    random_seed = 100
+    random.seed(random_seed)
+    np.random.seed(random_seed)
     arrival_rate, operator_service_rate, tiredness_rate, averages = read_inputs()
     sharifplus = SharifPlus(arrival_rate, operator_service_rate, tiredness_rate, averages)
     import time
     t0 = time.time()
-    customers = sharifplus.simulate(customer_count=1000)
+    customers = sharifplus.simulate(customer_count=100)
     print(time.time() - t0)
     print_customer_reports(customers)
     plotter = SharifPlusAnalysor(sharifplus, customers)
