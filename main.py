@@ -45,8 +45,9 @@ def print_customer_reports(customers):
     index = ["type", "value"]
     print("System times for processed users:")
     print(pd.DataFrame(data=system_times, columns=index).groupby("type").mean())
-    print("System times for tired users:")
-    print(pd.DataFrame(data=tired_system_times, columns=index).groupby("type").mean())
+    if len(tired_system_times) > 0:
+        print("System times for tired users:")
+        print(pd.DataFrame(data=tired_system_times, columns=index).groupby("type").mean())
     print("Wait times for processed users:")
     print(pd.DataFrame(data=wait_times, columns=index).groupby("type").mean())
     print("Number of tired users:", tired_counts)
@@ -59,7 +60,7 @@ def main():
     sharifplus = SharifPlus(arrival_rate, operator_service_rate, tiredness_rate, averages)
     import time
     t0 = time.time()
-    customers = sharifplus.simulate(customer_count=1000)
+    customers = sharifplus.simulate(customer_count=10000)
     print(time.time() - t0)
     print_customer_reports(customers)
     plotter = SharifPlusAnalysor(sharifplus, customers)
